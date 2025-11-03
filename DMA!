@@ -1,0 +1,14 @@
+//string
+#include<stdio.h>
+#include<stdlib.h>
+int main(){
+    int x;
+    printf("Enter size of string: ");
+    scanf("%d",&x);
+    char *ptr=(char*)malloc(x*sizeof(char));
+    printf("Enter the string: ");
+    scanf("%[^~],ptr);
+    printf("The string is:\n%s",ptr);
+    free(ptr);
+    return 0;
+}
