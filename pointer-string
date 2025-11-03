@@ -5,9 +5,9 @@ int main(){
     printf("Enter string:\n");
     scanf("%s",p);
     printf("Stored string:\n%s\n",p);
-    printf("Address of string: %p\n",p);
+    printf("Address of string:\n%p\n%d\n",p,p);
     printf("\nEnter second string:\n");
     scanf("%s",s2);
-    (*p>*q)?printf("S1 > S2\n"):printf("S2 > S1\n");
+    (*p>*q)?printf("S1 > S2\n"):(*p<*q)?printf("S2 > S1\n"):printf("S1 = S2\n");
     return 0;
 }
