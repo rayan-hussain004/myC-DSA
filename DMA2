@@ -1,0 +1,20 @@
+#include<stdio.h>
+#include<stdlib.h>
+int main(){
+    int x,y,i;
+    printf("Enter size and no.of blocks: ");
+    scanf("%d%d",&x,&y);
+    int *ptr=(int*)calloc(n*sizeof(int),y);
+    printf("Enter %d numbers:\n",x*y);
+    for(i=0;i<x;i++)
+        scanf("%d",arr);
+    printf("Stored data:\n%d\n",arr);
+    printf("Enter new size of memory: ");
+    scanf("%d",&x);
+    (int*)realloc(arr,x);
+    for(;i<x;i++)
+        scanf("%d",arr);
+    printf("Stored data:\n%d\n",arr);
+    free(arr);
+    return 0;
+}
