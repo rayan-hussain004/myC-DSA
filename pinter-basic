@@ -1,0 +1,16 @@
+#include<stdio.h>
+int main(){
+    int a=5,b=4,temp=a;
+    int* p1=&a;
+    printf("a=%d\tb=%d\tp1=%d\n",a,b,p1);
+    printf("a+b= %d\n",a+b);
+    printf("p1+b= %d",b+*p1);
+    printf("\nSwapping...");
+    int *p2=&b;
+    *p1=*p1^*p2^*p1;
+    *p2=temp;
+    int **p3=&p1;
+    printf("\n%d\n",**p3);
+    printf("a= %d\tb= %d\n",a,b);
+    return 0;
+}
