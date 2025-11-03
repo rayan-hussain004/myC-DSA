@@ -1,0 +1,19 @@
+#include<stdio.h>
+struct list{
+    int n;
+    int *p;
+};
+
+int main(){
+    int x,i;
+    printf("Enter no.of nodes: ");
+    scanf("%d",&x);
+    struct list l[x];
+    printf("Head address: %p",&l[0].n);
+    printf("\nCreated linked list (node and addresses):\n");
+    for(i=0;i<x;i++){
+        l[i].p=&l[i+1].n;
+        printf("%d - %p\n",i,l[i].p);
+    }
+    return 0;
+}
