@@ -339,73 +339,48 @@ int main() {
 }
 
 
+
 7-
 #include<stdio.h>
 #include<stdlib.h>
 
 int main(){
-    int n1,n2;
-    int *a=NULL,*b=NULL,*merged=NULL;
-    int i = 0, j = 0, k = 0;
-    printf("Enter size of first sorted array: ");
-    scanf("%d", &n1);
-    printf("Enter size of second sorted array: ");
-    scanf("%d", &n2);
-    a = (int *)malloc(n1 * sizeof(int));
-    b = (int *)malloc(n2 * sizeof(int));
-    if (a == NULL || b == NULL) {
-        printf("Memory allocation failed!\n");
-        return 1;
-    }
-    printf("Enter %d sorted elements for first array:\n", n1);
-    for (i = 0; i < n1; i++)
-        scanf("%d", a + i);
-    printf("Enter %d sorted elements for second array:\n", n2);
-    for (i = 0; i < n2; i++)
-        scanf("%d", b + i);
-    merged = (int *)malloc((n1 + n2) * sizeof(int));
-    if (merged == NULL) {
-        printf("Memory allocation failed!\n");
-        free(a);
-        free(b);
-        return 1;
-    }
-    i = j = k = 0;
-    while (i < n1 && j < n2) {
-        if (*(a + i) < *(b + j))
-            merged[k++] = a[i++];
-        else if (*(a + i) > *(b + j))
-            merged[k++] = b[j++];
-        else {
-            merged[k++] = a[i];
-            i++;
-            j++;
-        }
-        while (i < n1 && merged[k - 1] == *(a + i)) i++;
-        while (j < n2 && merged[k - 1] == *(b + j)) j++;
-    }
-    while (i < n1) {
-        if (k == 0 || merged[k - 1] != *(a + i))
-            merged[k++] = *(a + i);
-        i++;
-    }
-    while (j < n2) {
-        if (k == 0 || merged[k - 1] != *(b + j))
-            merged[k++] = *(b + j);
-        j++;
-    }
-    int *temp = (int *)realloc(merged, k * sizeof(int));
-    if (temp != NULL)
-        merged = temp;
-    printf("\nMerged sorted array without duplicates:\n");
-    for (i = 0; i < k; i++)
-        printf("%d ", *(merged + i));
-    printf("\n");
-    free(a);
-    free(b);
-    free(merged);
-    return 0;
+	int n1,n2;
+	printf("Enter size of array1: ");
+	scanf("%d",&n1);
+	int x=n1;
+	int *a=(int*)malloc(n1*sizeof(int));
+	printf("Enter %d elements(sorted):\n",n1);
+	for(n2=0;n2<n1;n2++)
+		scanf("%d",&a[n2]);
+	printf("Enter size of array2: ");
+	scanf("%d",&n1);
+	int y=n1;
+	int *b=(int*)malloc(n1*sizeof(int));
+	printf("Enter %d elements(sorted):\n",n1);
+	for(n2=0;n2<n1;n2++)
+		scanf("%d",&b[n2]);
+	
+	int *r=(int*)malloc((x+n1)*sizeof(int));
+	for(n2=0;n2<x;n2++)
+		if(a[n2]!=b[n2])
+			r[n2]=a[n2];
+	for(n1=0;n1<y;n1++,n2++)
+		if(a[n1]!=b[n1])
+			r[n2]=b[n1];
+	
+	int *r1=(int*)realloc(r,n2*sizeof(int));
+	
+	printf("size after realloc: %d\n",n2*sizeof(int));
+	for(int i=0;i<n2;i++)
+	    printf("Stored result:\n%d\n",r1[i]);
+	free(a);
+	free(b);
+	free(r);
+	free(r1);
+	return 0;
 }
+
 
 
 8-
