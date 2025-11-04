@@ -1,0 +1,14 @@
+#include<stdio.h>
+#define cap 100
+int main(){
+    int a[cap],n=120;
+    void printarray(int a[],int n){
+    	int i;
+        for(i=0;i<cap&&i<n;i++){
+            a[i]=i;
+            printf("%d ",a[i]);
+        }
+    }
+    printarray(a,n);
+    return 0;
+}
