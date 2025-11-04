@@ -1,0 +1,785 @@
+skill lab 2025 DSA-C
+1-
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int *arr, N;
+    int *ptr;  // pointer for traversal
+    int sum = 0, max;
+
+    // Input size
+    printf("Enter number of elements (N): ");
+    scanf("%d", &N);
+
+    // Dynamically allocate memory
+    arr = (int *)malloc(N * sizeof(int));
+    if (arr == NULL) {
+        printf("Memory allocation failed!\n");
+        return 1;
+    }
+
+    // Read values using pointer arithmetic
+    printf("Enter %d integers:\n", N);
+    for (ptr = arr; ptr < arr + N; ptr++) {
+        scanf("%d", ptr);
+    }
+
+    // Initialize max with first element
+    max = *arr;
+
+    // Compute sum and max using pointer arithmetic
+    for (ptr = arr; ptr < arr + N; ptr++) {
+        sum += *ptr;
+        if (*ptr > max)
+            max = *ptr;
+    }
+
+    // Display results
+    printf("\nSum = %d\n", sum);
+    printf("Maximum = %d\n", max);
+
+    // Free allocated memory
+    free(arr);
+
+    return 0;
+}
+
+
+2-
+#include <stdio.h>
+#include <stdlib.h>
+
+char *my_strdup(char *src) {
+    char *dup, *p, *q;
+    int len = 0;
+
+    // Find the length of src using pointer arithmetic
+    for (p = src; *p != '\0'; p++)
+        len++;
+
+    // Allocate memory for duplicate string (+1 for null terminator)
+    dup = (char *)malloc((len + 1) * sizeof(char));
+    if (dup == NULL)
+        return NULL; // Allocation failed
+
+    // Copy characters using pointer arithmetic
+    q = dup;
+    for (p = src; *p != '\0'; p++, q++)
+        *q = *p;
+
+    *q = '\0'; // Null terminate the new string
+
+    return dup;
+}
+
+int main() {
+    char str[100];
+    printf("Enter a string: ");
+    fgets(str, sizeof(str), stdin);
+
+    // Remove newline if present
+    for (char *p = str; *p != '\0'; p++) {
+        if (*p == '\n') {
+            *p = '\0';
+            break;
+        }
+    }
+
+    char *copy = my_strdup(str);
+
+    if (copy == NULL) {
+        printf("Memory allocation failed!\n");
+        return 1;
+    }
+
+    printf("Original: %s\n", str);
+    printf("Duplicate: %s\n", copy);
+
+    free(copy); // Free the duplicated string
+    return 0;
+}
+
+
+3-
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int R, C;
+    int *mat = NULL;        // original matrix
+    int *trans = NULL;      // transposed matrix (if needed)
+    int i, j;
+
+    printf("Enter number of rows (R): ");
+    scanf("%d", &R);
+    printf("Enter number of columns (C): ");
+    scanf("%d", &C);
+
+    // Allocate R*C elements in a single malloc
+    mat = (int *)malloc(R * C * sizeof(int));
+    if (mat == NULL) {
+        printf("Memory allocation failed!\n");
+        return 1;
+    }
+
+    // Input matrix elements using pointer arithmetic
+    printf("Enter %d elements:\n", R * C);
+    for (i = 0; i < R; i++) {
+        for (j = 0; j < C; j++) {
+            scanf("%d", (mat + i * C + j));
+        }
+    }
+
+    printf("\nOriginal Matrix:\n");
+    for (i = 0; i < R; i++) {
+        for (j = 0; j < C; j++) {
+            printf("%d ", *(mat + i * C + j));
+        }
+        printf("\n");
+    }
+
+    // If square, transpose in place
+    if (R == C) {
+        printf("\nTranspose (in-place):\n");
+        for (i = 0; i < R; i++) {
+            for (j = 0; j < C; j++) {
+                printf("%d ", *(mat + j * C + i));
+            }
+            printf("\n");
+        }
+    } else {
+        // Allocate new memory for transpose (C x R)
+        trans = (int *)malloc(C * R * sizeof(int));
+        if (trans == NULL) {
+            printf("Memory allocation for transpose failed!\n");
+            free(mat);
+            return 1;
+        }
+
+        // Fill transposed matrix
+        for (i = 0; i < R; i++) {
+            for (j = 0; j < C; j++) {
+                *(trans + j * R + i) = *(mat + i * C + j);
+            }
+        }
+
+        printf("\nTranspose (stored in new matrix):\n");
+        for (i = 0; i < C; i++) {
+            for (j = 0; j < R; j++) {
+                printf("%d ", *(trans + i * R + j));
+            }
+            printf("\n");
+        }
+
+        free(trans);
+    }
+
+    free(mat);
+    return 0;
+}
+
+
+4-
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int *data;       // Pointer to array elements
+    int size;        // Current number of elements
+    int capacity;    // Allocated capacity
+} DynamicArray;
+
+// Initialize dynamic array with initial capacity
+void init(DynamicArray *arr, int initial_capacity) {
+    arr->size = 0;
+    arr->capacity = initial_capacity;
+    arr->data = (int *)malloc(arr->capacity * sizeof(int));
+    if (arr->data == NULL) {
+        printf("Memory allocation failed!\n");
+        exit(1);
+    }
+}
+
+// Push element to dynamic array, doubling capacity when full
+void push(DynamicArray *arr, int value) {
+    if (arr->size == arr->capacity) {
+        arr->capacity *= 2; // Double capacity
+        int *new_data = (int *)realloc(arr->data, arr->capacity * sizeof(int));
+        if (new_data == NULL) {
+            printf("Reallocation failed!\n");
+            free(arr->data);
+            exit(1);
+        }
+        arr->data = new_data;
+        printf("Capacity doubled to %d\n", arr->capacity);
+    }
+
+    arr->data[arr->size++] = value;
+}
+
+// Print array contents
+void printArray(DynamicArray *arr) {
+    printf("Array elements (%d/%d): ", arr->size, arr->capacity);
+    for (int i = 0; i < arr->size; i++) {
+        printf("%d ", arr->data[i]);
+    }
+    printf("\n");
+}
+
+// Free memory
+void freeArray(DynamicArray *arr) {
+    free(arr->data);
+    arr->data = NULL;
+    arr->size = arr->capacity = 0;
+}
+
+// Example usage
+int main() {
+    DynamicArray arr;
+    init(&arr, 2); // Start with small capacity
+
+    int n, val;
+    printf("Enter number of elements to push: ");
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; i++) {
+        printf("Enter value %d: ", i + 1);
+        scanf("%d", &val);
+        push(&arr, val);
+        printArray(&arr);
+    }
+
+    freeArray(&arr);
+    return 0;
+}
+
+
+5-
+#include <stdio.h>
+#include <stdlib.h>
+
+char *getLine(void) {
+    char *buffer = NULL;   // Dynamic buffer
+    int size = 0;          // Number of characters read
+    int capacity = 10;     // Initial capacity
+    int ch;
+
+    buffer = (char *)malloc(capacity * sizeof(char));
+    if (buffer == NULL) {
+        printf("Memory allocation failed!\n");
+        return NULL;
+    }
+
+    // Read characters until newline or EOF
+    while ((ch = getchar()) != '\n' && ch != EOF) {
+        buffer[size++] = (char)ch;
+
+        // If buffer full, double capacity
+        if (size >= capacity) {
+            capacity *= 2;
+            char *new_buffer = (char *)realloc(buffer, capacity * sizeof(char));
+            if (new_buffer == NULL) {
+                printf("Reallocation failed!\n");
+                free(buffer);
+                return NULL;
+            }
+            buffer = new_buffer;
+        }
+    }
+
+    // Add null terminator
+    buffer[size] = '\0';
+
+    // Optionally shrink to exact size
+    char *final = (char *)realloc(buffer, (size + 1) * sizeof(char));
+    return (final != NULL) ? final : buffer;
+}
+
+int main() {
+    printf("Enter a line of text:\n");
+    char *line = getLine();
+
+    if (line == NULL) {
+        printf("Failed to read line.\n");
+        return 1;
+    }
+
+    printf("\nYou entered: \"%s\"\n", line);
+
+    free(line);
+    return 0;
+}
+
+
+6-
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+// Create a new node
+Node* createNode(int data) {
+    Node *newNode = (Node *)malloc(sizeof(Node));
+    if (!newNode) {
+        printf("Memory allocation failed!\n");
+        exit(1);
+    }
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Insert node at the end
+void insertEnd(Node **head, int data) {
+    Node *newNode = createNode(data);
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+    Node *temp = *head;
+    while (temp->next != NULL)
+        temp = temp->next;
+    temp->next = newNode;
+}
+
+// Delete k-th node from the end using two-pointer technique
+void deleteKthFromEnd(Node **head, int k) {
+    if (*head == NULL || k <= 0)
+        return;
+
+    Node *fast = *head, *slow = *head;
+    Node *prev = NULL;
+
+    // Move fast k steps ahead
+    for (int i = 0; i < k; i++) {
+        if (fast == NULL) {
+            printf("List has fewer than %d nodes.\n", k);
+            return;
+        }
+        fast = fast->next;
+    }
+
+    // If fast reached NULL, we need to delete the head
+    if (fast == NULL) {
+        Node *temp = *head;
+        *head = (*head)->next;
+        free(temp);
+        return;
+    }
+
+    // Move both pointers until fast reaches the end
+    while (fast != NULL) {
+        fast = fast->next;
+        prev = slow;
+        slow = slow->next;
+    }
+
+    // Delete the k-th node from end
+    prev->next = slow->next;
+    free(slow);
+}
+
+// Print list
+void printList(Node *head) {
+    while (head != NULL) {
+        printf("%d -> ", head->data);
+        head = head->next;
+    }
+    printf("NULL\n");
+}
+
+// Free all nodes
+void freeList(Node *head) {
+    Node *temp;
+    while (head != NULL) {
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
+
+// Main function
+int main() {
+    Node *head = NULL;
+    int n, k, val;
+
+    printf("Enter number of nodes: ");
+    scanf("%d", &n);
+
+    printf("Enter %d elements:\n", n);
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &val);
+        insertEnd(&head, val);
+    }
+
+    printf("Original list:\n");
+    printList(head);
+
+    printf("Enter k (node to delete from end): ");
+    scanf("%d", &k);
+
+    deleteKthFromEnd(&head, k);
+
+    printf("List after deleting %d-th node from end:\n", k);
+    printList(head);
+
+    freeList(head);
+    return 0;
+}
+
+
+7-
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int n1, n2;
+    int *a = NULL, *b = NULL, *merged = NULL;
+    int i = 0, j = 0, k = 0;
+
+    // Input sizes
+    printf("Enter size of first sorted array: ");
+    scanf("%d", &n1);
+    printf("Enter size of second sorted array: ");
+    scanf("%d", &n2);
+
+    // Allocate memory
+    a = (int *)malloc(n1 * sizeof(int));
+    b = (int *)malloc(n2 * sizeof(int));
+
+    if (a == NULL || b == NULL) {
+        printf("Memory allocation failed!\n");
+        return 1;
+    }
+
+    // Input sorted arrays
+    printf("Enter %d sorted elements for first array:\n", n1);
+    for (i = 0; i < n1; i++)
+        scanf("%d", a + i);
+
+    printf("Enter %d sorted elements for second array:\n", n2);
+    for (i = 0; i < n2; i++)
+        scanf("%d", b + i);
+
+    // Allocate enough memory for merged array (max possible = n1 + n2)
+    merged = (int *)malloc((n1 + n2) * sizeof(int));
+    if (merged == NULL) {
+        printf("Memory allocation failed!\n");
+        free(a);
+        free(b);
+        return 1;
+    }
+
+    // Merge without duplicates
+    i = j = k = 0;
+    while (i < n1 && j < n2) {
+        if (*(a + i) < *(b + j))
+            merged[k++] = a[i++];
+        else if (*(a + i) > *(b + j))
+            merged[k++] = b[j++];
+        else {
+            merged[k++] = a[i];
+            i++;
+            j++;
+        }
+        // Remove duplicates while merging
+        while (i < n1 && merged[k - 1] == *(a + i)) i++;
+        while (j < n2 && merged[k - 1] == *(b + j)) j++;
+    }
+
+    // Copy remaining elements
+    while (i < n1) {
+        if (k == 0 || merged[k - 1] != *(a + i))
+            merged[k++] = *(a + i);
+        i++;
+    }
+    while (j < n2) {
+        if (k == 0 || merged[k - 1] != *(b + j))
+            merged[k++] = *(b + j);
+        j++;
+    }
+
+    // Shrink memory to actual number of elements
+    int *temp = (int *)realloc(merged, k * sizeof(int));
+    if (temp != NULL)
+        merged = temp;
+
+    // Print result
+    printf("\nMerged sorted array without duplicates:\n");
+    for (i = 0; i < k; i++)
+        printf("%d ", *(merged + i));
+    printf("\n");
+
+    // Free all memory
+    free(a);
+    free(b);
+    free(merged);
+
+    return 0;
+}
+
+
+8-
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int **marks = NULL;    // Jagged array
+    int *numSubjects = NULL;
+    int numStudents;
+    int i, j;
+
+    printf("Enter number of students: ");
+    scanf("%d", &numStudents);
+
+    // Allocate array of int* (each pointing to a student's subjects)
+    marks = (int **)malloc(numStudents * sizeof(int *));
+    numSubjects = (int *)malloc(numStudents * sizeof(int));
+    if (marks == NULL || numSubjects == NULL) {
+        printf("Memory allocation failed!\n");
+        return 1;
+    }
+
+    // Input marks for each student
+    for (i = 0; i < numStudents; i++) {
+        printf("\nEnter number of subjects for student %d: ", i + 1);
+        scanf("%d", &numSubjects[i]);
+
+        marks[i] = (int *)malloc(numSubjects[i] * sizeof(int));
+        if (marks[i] == NULL) {
+            printf("Memory allocation failed!\n");
+            // Free already allocated memory before exiting
+            for (int k = 0; k < i; k++)
+                free(marks[k]);
+            free(marks);
+            free(numSubjects);
+            return 1;
+        }
+
+        printf("Enter %d marks for student %d: ", numSubjects[i], i + 1);
+        for (j = 0; j < numSubjects[i]; j++)
+            scanf("%d", &marks[i][j]);
+    }
+
+    // Calculate averages and find topper
+    float *avg = (float *)malloc(numStudents * sizeof(float));
+    if (avg == NULL) {
+        printf("Memory allocation failed!\n");
+        for (i = 0; i < numStudents; i++)
+            free(marks[i]);
+        free(marks);
+        free(numSubjects);
+        return 1;
+    }
+
+    int topper = 0;
+    for (i = 0; i < numStudents; i++) {
+        int sum = 0;
+        for (j = 0; j < numSubjects[i]; j++)
+            sum += marks[i][j];
+        avg[i] = (float)sum / numSubjects[i];
+        if (avg[i] > avg[topper])
+            topper = i;
+    }
+
+    // Print all averages
+    printf("\n--- Student Averages ---\n");
+    for (i = 0; i < numStudents; i++)
+        printf("Student %d average: %.2f\n", i + 1, avg[i]);
+
+    // Print topper
+    printf("\nTopper: Student %d with average %.2f\n", topper + 1, avg[topper]);
+
+    // Free all allocated memory
+    for (i = 0; i < numStudents; i++)
+        free(marks[i]);
+    free(marks);
+    free(numSubjects);
+    free(avg);
+
+    return 0;
+}
+
+
+9-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Function to split a string dynamically
+char **split(char *str, char delim, int *count) {
+    char **tokens = NULL;   // Array of strings
+    char *token_start = str;
+    int token_count = 0;
+
+    while (*str) {
+        if (*str == delim) {
+            // Found a delimiter → extract substring
+            int length = str - token_start;
+            char *token = (char *)malloc((length + 1) * sizeof(char));
+            if (token == NULL) {
+                printf("Memory allocation failed!\n");
+                exit(1);
+            }
+
+            strncpy(token, token_start, length);
+            token[length] = '\0';
+
+            // Reallocate token array to hold one more string
+            char **new_tokens = (char **)realloc(tokens, (token_count + 1) * sizeof(char *));
+            if (new_tokens == NULL) {
+                printf("Reallocation failed!\n");
+                exit(1);
+            }
+            tokens = new_tokens;
+            tokens[token_count++] = token;
+
+            token_start = str + 1;  // Move past delimiter
+        }
+        str++;
+    }
+
+    // Handle last token (after last delimiter)
+    if (str != token_start) {
+        int length = str - token_start;
+        char *token = (char *)malloc((length + 1) * sizeof(char));
+        if (token == NULL) {
+            printf("Memory allocation failed!\n");
+            exit(1);
+        }
+
+        strncpy(token, token_start, length);
+        token[length] = '\0';
+
+        char **new_tokens = (char **)realloc(tokens, (token_count + 1) * sizeof(char *));
+        if (new_tokens == NULL) {
+            printf("Reallocation failed!\n");
+            exit(1);
+        }
+        tokens = new_tokens;
+        tokens[token_count++] = token;
+    }
+
+    *count = token_count;
+    return tokens;
+}
+
+int main() {
+    char input[200];
+    char delim;
+    int count, i;
+
+    printf("Enter a string: ");
+    fgets(input, sizeof(input), stdin);
+
+    // Remove newline if present
+    input[strcspn(input, "\n")] = '\0';
+
+    printf("Enter a delimiter character: ");
+    scanf("%c", &delim);
+
+    char **result = split(input, delim, &count);
+
+    printf("\nTokens (%d):\n", count);
+    for (i = 0; i < count; i++) {
+        printf("[%d] \"%s\"\n", i + 1, result[i]);
+        free(result[i]);  // Free each token
+    }
+
+    free(result); // Free the array of pointers
+    return 0;
+}
+
+10-
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int width;
+    int height;
+    unsigned char *data; // 1D array for pixels (row-major)
+} Image;
+
+// Allocate image buffer (W x H)
+Image *createImage(int width, int height) {
+    Image *img = (Image *)malloc(sizeof(Image));
+    if (img == NULL) {
+        printf("Memory allocation failed!\n");
+        exit(1);
+    }
+
+    img->width = width;
+    img->height = height;
+    img->data = (unsigned char *)malloc(width * height * sizeof(unsigned char));
+    if (img->data == NULL) {
+        printf("Image data allocation failed!\n");
+        free(img);
+        exit(1);
+    }
+
+    // Initialize pixels to zero (black)
+    for (int i = 0; i < width * height; i++)
+        img->data[i] = 0;
+
+    return img;
+}
+
+// Get pixel value at (x, y)
+unsigned char getPixel(Image *img, int x, int y) {
+    if (x < 0 || x >= img->width || y < 0 || y >= img->height) {
+        printf("getPixel: Invalid coordinates (%d, %d)\n", x, y);
+        return 0;
+    }
+    return img->data[y * img->width + x];
+}
+
+// Set pixel value at (x, y)
+void setPixel(Image *img, int x, int y, unsigned char value) {
+    if (x < 0 || x >= img->width || y < 0 || y >= img->height) {
+        printf("setPixel: Invalid coordinates (%d, %d)\n", x, y);
+        return;
+    }
+    img->data[y * img->width + x] = value;
+}
+
+// Print image matrix
+void printImage(Image *img) {
+    printf("\nImage (%d x %d):\n", img->width, img->height);
+    for (int y = 0; y < img->height; y++) {
+        for (int x = 0; x < img->width; x++) {
+            printf("%3d ", getPixel(img, x, y));
+        }
+        printf("\n");
+    }
+}
+
+// Free memory
+void freeImage(Image *img) {
+    if (img) {
+        free(img->data);
+        free(img);
+    }
+}
+
+int main() {
+    int W, H;
+    printf("Enter image width and height: ");
+    scanf("%d %d", &W, &H);
+
+    Image *img = createImage(W, H);
+
+    // Example: fill diagonal with increasing grayscale values
+    for (int i = 0; i < W && i < H; i++)
+        setPixel(img, i, i, (i * 255) / (W > H ? W : H));
+
+    printImage(img);
+    freeImage(img);
+
+    return 0;
+}
+
