@@ -1,0 +1,18 @@
+#include<stdio.h>
+#include<stdlib.h>
+struct node{
+    int data;
+    char data1;
+    struct node *next;
+};
+
+struct node *head=NULL;
+int main(){
+    head=(struct node*)malloc(sizeof(struct node));
+    head->data=5;
+    head->data1='z';
+    head->next=NULL;
+    printf("data= %d\ndata1= %c\npointer value= %p\n",head->data,head->data1,head->next);
+    free(head);
+    return 0;
+}
