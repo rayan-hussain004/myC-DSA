@@ -1,0 +1,48 @@
+#include<stdio.h>
+#define max 5
+
+int q[max];
+int f=-1,r=-1;
+void enq(int v){
+    if(r==max-1)
+        printf("Queue full\n");
+    else{
+        if(f==-1) f=0;
+        r++;
+        q[r]=v;
+    }
+}
+void dq(){
+    if(f==-1)
+        printf("Queue empty\n");
+    else{
+        printf("%d deleted\n",q[f]);
+        //f++;
+        for(int i=f+1;i<=r;i++)
+             q[i-1]=q[i];
+        r--;
+    }
+}
+void display(){
+    for(int i=f;i<=r;i++)
+        printf("%d\n",q[i]);
+}
+
+void main(){
+    int x;
+    do{
+        printf("\nSelect choice:\n1.Enqueue\n2.Dequeue\n3.Peek\n4.Display\n");
+        scanf("%d",&x);
+        switch(x){
+            case 1:int a;
+                    printf("Enter value: ");
+                    scanf("%d",&a);
+                    enq(a);break;
+            case 2:dq();break;
+            case 3:printf("front = %d\n",q[f]);break;
+            case 4:printf("Queue:\n");
+                    display();break;
+            default:printf("Program ended.\n");break;
+            }
+        }while(x!=5);
+}
