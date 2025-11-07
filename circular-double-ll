@@ -1,0 +1,139 @@
+#include<stdio.h>
+#include<stdlib.h>
+struct node{
+    struct node* pre;
+    int data;
+    struct node* next;
+};
+struct node* head=NULL;
+void insertbegin(int v){
+    struct node* newnode=(struct node*)malloc(sizeof(struct node));
+    newnode->data=v;
+    if(head==NULL){
+        newnode->pre=newnode;
+        newnode->next=newnode;
+        head=newnode;
+        return;
+    }
+    struct node* temp=head;
+    newnode->next=head;
+    head->pre=newnode;
+    while(1){
+        temp=temp->next;
+        if(temp->next==head) break;
+    }
+    newnode->pre=temp;
+    temp->next=newnode;
+    head=newnode;
+}
+void insertend(int v){
+    struct node* newnode=(struct node*)malloc(sizeof(struct node));
+    newnode->data=v;
+    if(head==NULL){
+        newnode->pre=newnode;
+        newnode->next=newnode;
+        head=newnode;
+        return;
+    }
+    struct node* temp=head;
+    while(temp->next!=head)
+        temp=temp->next;
+    temp->next=newnode;
+    newnode->pre=temp;
+    newnode->next=head;
+}
+void insertpos(int v,int p){
+    struct node* newnode=(struct node*)malloc(sizeof(struct node));
+    newnode->data=v;
+    if(head==NULL){
+        newnode->pre=newnode;
+        newnode->next=newnode;
+        head=newnode;
+        return;
+    }
+    if(p==1){
+        insertbegin(v);
+        return;
+    }
+    struct node* temp=head;
+    for(int i=1;i<p-1&&temp->next!=head;i++)
+        temp=temp->next;
+    struct node* temp1=temp->next;
+    newnode->next=temp1;
+    newnode->pre=temp;
+    temp->next=newnode;
+    temp1->pre=newnode;
+}
+void delbegin(){
+    if(head==NULL){
+        printf("List empty\n");
+        return;
+    }
+    struct node* temp=head;
+    while(temp->next!=head)
+        temp=temp->next;
+    temp->next=head->next;
+    head->next->pre=temp;
+    temp=head;
+    head=head->next;
+    free(temp);
+}
+void delend(){
+    if(head==NULL){
+        printf("List empty\n");
+        return;
+    }
+    struct node* temp=head;
+    do{
+        temp=temp->next;
+    }while(temp->next!=head);
+    head->pre=temp->pre;
+    temp->pre->next=head;
+    free(temp);
+}
+void delpos(int p){
+    if(head==NULL){
+        printf("List empty\n");
+        return;
+    }
+    if(p==1){
+            delbegin();
+            return;
+    }
+    struct node* temp=head;
+    for(int i=1;i<p-1&&temp!=head;i++)
+        temp=temp->next;
+    struct node* temp1=temp->next;
+    temp->next=temp1->next;
+    temp1->next->pre=temp;
+    free(temp1);
+}
+void display(){
+    struct node* temp=head;
+    if(head==NULL){
+        printf("List empty\n");
+        return;
+    }
+    do{
+        printf("%d->",temp->data);
+        temp=temp->next;
+    }while(temp!=head);
+    printf("Head\n");
+}
+void main(){
+    insertbegin(1);
+    insertbegin(2);
+    insertbegin(3);
+    display();
+    insertend(4);
+    insertend(5);
+    insertpos(6,1);
+    insertpos(7,1);
+    display();
+    delbegin();
+    delbegin();
+    display();
+    delpos(2);
+    delpos(4);
+    display();
+}
